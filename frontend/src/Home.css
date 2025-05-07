@@ -1,0 +1,310 @@
+.menu-bar {
+  background-color: #f0f0f0;
+  padding: 5px; /* Slightly increased padding for better spacing */
+  flex-shrink: 0;
+}
+
+.menu-bar ul {
+  list-style-type: none;
+  display: flex;
+  justify-content: flex-start; /* Align items to the left */
+  padding: 0; /* Remove default padding */
+  margin: 0; /* Remove default margin */
+}
+
+.menu-bar li {
+  cursor: pointer;
+  padding: 5px 10px; /* Reduced padding to bring items closer */
+  margin-right: 10px; /* Space between items */
+}
+
+.menu-bar li:last-child {
+  margin-right: 0; /* Remove margin from the last item */
+}
+
+.menu-bar li:hover {
+  background-color: #ddd; /* Highlight on hover */
+}
+
+.home-container {
+  padding: 20px;
+  background-color: #f4f4f4;
+  height: 100vh;
+  flex-direction: column;
+  display: flex;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  padding: 5px;
+  margin-right: 5px;
+  font-size: 14px;
+  width: 150px;
+  margin-top: 10px;
+  height: 35px;
+  margin-left: auto;
+}
+.search-button {
+  padding: 3px 5px;
+  font-size: 14px;
+  width: 120px;
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-left: 950px;
+}
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  /*flex-direction: column;
+  gap: 1px;*/
+  justify-content: space-between;
+}
+
+.form-column{
+  flex: 1;
+  margin-right: 20px;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-basis: 30%;
+}
+
+.form-group label {
+  width: 200px;
+  margin-right: 10px;
+  text-align: right;
+  /*white-space: nowrap;*/
+}
+.form-group input{
+  flex: 0;
+  padding: 5px;
+  width: 150px;
+}
+
+
+/*.center{
+  display: flex;
+  flex-direction: column;
+  flex-basis: 40%;
+  justify-content: center;
+  align-items: center;
+}*/
+
+.button-container {
+  display: flex; /* Use Flexbox for horizontal alignment */
+  justify-content: center; /* Space between buttons */
+  margin-top: 20px; /* Space above the buttons */
+  margin-left: 300px;
+}
+.submit-button {
+  padding: 5px 10px; /* Smaller padding for a minimized button */
+  font-size: 12px; /* Smaller font size */
+  margin: 0 5px; /* Space between buttons */
+  flex: 1; /* Allow buttons to grow equally */
+  min-width: 100px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.data-table th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.data-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.data-table button {
+  margin-right: 5px;
+}
+
+.data-table .row-action-button {
+  padding: 4px 8px;         /* Smaller buttons */
+  font-size: 12px;          /* Smaller text */
+  margin-right: 8px;        /* Space between buttons */
+  min-width: 60px;          /* Optional: keep some width */
+  border-radius: 4px;       /* Optional: slightly rounded */
+  cursor: pointer;
+}
+
+.data-table .row-action-button:last-child {
+  margin-right: 0;          /* No margin after last button */
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Space between logo and title */
+  padding: 10px; /* Padding around the header */
+  background-color: darkblue;
+  flex-shrink: 0;
+  height: 80px;
+}
+
+.logo {
+  width: 85px; /* Adjust logo size */
+  height: auto; /* Maintain aspect ratio */
+  background-color: darkblue;
+}
+
+.project-title {
+  flex-grow: 1; /* Allow title to take up remaining space */
+  text-align: center; /* Center the title */
+  margin: 0; /* Remove default margin */
+}
+
+/* Scrollable content */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background-color: #fff;
+  scroll-behavior: smooth;
+}
+
+
+.table-container {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.data-table {
+  min-width: 1200px; /* adjust based on your actual column count */
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  white-space: nowrap;
+}
+
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* optional: spacing between buttons */
+  align-items: stretch; /* make buttons full width */
+}
+
+.row-action-button {
+  padding: 4px 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.logout{
+  margin-left: auto;
+}
+
+/* file view css*/
+/*
+.cont-container {
+  display: flex;
+  gap: 30rem; /* space between the label-input pairs 
+  align-items: center;
+}
+
+.cont-container > div {
+  display: flex;
+  align-items: center;
+  gap: 2rem; space between label and input 
+}
+.cont-container label{
+  white-space: nowrap;
+}
+*/
+.form-group-1 {
+  margin-left: -80px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-basis: 30%;
+}
+
+.form-group-1 label {
+  width: 200px;
+  margin-right: 10px;
+  text-align: right;
+  /*white-space: nowrap;*/
+}
+.form-group-1 input{
+  flex: 0;
+  padding: 5px;
+  width: 150px;
+}
+.uniq-title{
+  margin-left: 100px;
+}
+.form-column-4 .uniq-title{
+  margin-left: 120px;
+}
+.form-column-1{
+  flex: 1;
+  margin-right: 10px;
+}
+
+.form-column-4{
+  flex: 1;
+  margin-right: 10px;
+  margin-left: -10px;
+}
+
+
+.form-column-2 {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* horizontally center content */
+}
+
+.form-column-5 {
+  flex: 1;
+  /*display: flex;*/
+  flex-direction: column;
+  align-items: center; /* horizontally center content */
+}
+.form-column-3 {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* horizontally center content */
+}
+.form-column-6{
+  margin-right: 20px;
+}
+
+.form-1 {
+  display: flex;
+  flex-wrap: wrap;
+  /*flex-direction: column;
+  gap: 1px;*/
+  justify-content: space-between;
+}
+
+

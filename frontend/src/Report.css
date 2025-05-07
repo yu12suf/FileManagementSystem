@@ -1,0 +1,53 @@
+.app {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    padding: 20px;
+}
+
+.report-item {
+    margin: 10px 0;
+}
+
+.report-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 16px 24px; /* Increase padding for height */
+  font-size: 18px; /* Increase font size */
+  font-weight: bold; /* Optional: make text bolder */
+  background-color: #005f7f;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 12px;
+
+}
+
+.report-button:hover {
+    background-color: #005f7f;
+}
+
+.kebele-label {
+    margin-left: auto; /* Pushes the kebele label to the right */
+    font-size: 16px;
+
+}
+
+.report-content {
+    background-color: #e7f3fe;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+}
+
+/*********report  ******/
+.button-group{
+    margin-left: 10px;
+}
+.button-group button{
+    margin-bottom: 8px; /* Adds spacing between buttons */
+    background-color: #005f7f;
+}
+
+  
