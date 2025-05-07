@@ -1,0 +1,19 @@
+# Node modules
+node_modules/
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# dotenv files
+.env
+
+# OS files
+.DS_Store
+
+# build folders
+/build
+/dist
+
+# MySQL dump or local DB files (if any)
+*.sql
