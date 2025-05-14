@@ -1,8 +1,8 @@
-import React, { useRef, useState } from "react";
 import axios from "axios";
-import "./Report3.css";
+import "./Report1.css";
+import React, { useRef, useState } from "react";
 
-const Report3 = () => {
+const Report1 = () => {
   const [selectedProof, setSelectedProof] = useState("");
   const [records, setRecords] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -11,10 +11,10 @@ const Report3 = () => {
   const handlePreview = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/records/search?proofOfPossession=${selectedProof}`
+        `http://localhost:5000/api/records/search?ServiceOfEstate=${selectedProof}`
       );
       setRecords(response.data);
-      setShowModal(true); // Show the modal after data is fetched
+      setShowModal(true);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -27,7 +27,7 @@ const Report3 = () => {
   const handlePrint = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/records/search?proofOfPossession=${selectedProof}`
+        `http://localhost:5000/api/records/search?ServiceOfEstate=${selectedProof}`
       );
       setRecords(response.data);
 
@@ -48,18 +48,26 @@ const Report3 = () => {
 
   return (
     <div className="form-group horizontal-group">
-      <label>የይዞታ ማራጋገጫ</label>
+      <label>የይዞታው አገልግሎት</label>
       <select
-        name="proofOfPossession"
+        name="ServiceOfEstate"
         value={selectedProof}
         onChange={(e) => setSelectedProof(e.target.value)}
       >
         <option value="">Select</option>
-        <option>ካርታ</option>
-        <option>ሰነድ አልባ</option>
-        <option>ህገ-ውፕ</option>
-        <option>ምንም የሌለው</option>
+        <option>ለመኖረያ</option>
+        <option>ለንግድ</option>
+        <option>የመንግስት</option>
+        <option>የሐይማኖት ተቋም</option>
+        <option>ኢንቨስትመንት</option>
+        <option>የቀበሌ</option>
+        <option>የኪይ ቤቶች</option>
+        <option>ኮንዲኒሚየም</option>
+        <option>መንገድ</option>
+        <option>የማሃበር</option>
+        <option>ሌሎች</option>
       </select>
+
       <div className="button-group-vertical">
         <button onClick={handlePreview}>Preview</button>
         <button onClick={handlePrint}>Print</button>
@@ -71,20 +79,20 @@ const Report3 = () => {
             <button className="close-button" onClick={handleClose}>
               &times;
             </button>
-            <div className="report3-header">
-              <h2>የተመረጠው መረጃ</h2>
+            <div className="report1-header">
+               <h2>የተመረጠው መረጃ</h2>
             </div>
-
+            
             <table className="preview-table">
               <thead>
                 <tr>
-                  <th>ተ.ቁ</th>
+                  <th>ተ.ቁ </th>
                   <th>ይዞታው ባለቤት ስም</th>
                   <th>UPIN</th>
                   <th>ቀበሌ</th>
                   <th>የቦታው ደረጃ</th>
                   <th>የቦታ ስፋት</th>
-                  <th>የይዞታ ማራጋገጫ</th>
+                  <th>የይዞታው አገልግሎት</th>
                 </tr>
               </thead>
               <tbody>
@@ -96,7 +104,7 @@ const Report3 = () => {
                     <td>{record.kebele}</td>
                     <td>{record.placeLevel}</td>
                     <td>{record.spaceSize}</td>
-                    <td>{record.proofOfPossession}</td>
+                    <td>{record.ServiceOfEstate}</td>
                   </tr>
                 ))}
               </tbody>
@@ -104,6 +112,7 @@ const Report3 = () => {
           </div>
         </div>
       )}
+
       {/* Hidden printable content */}
       <div style={{ display: "none" }}>
         <div ref={printRef}>
@@ -111,13 +120,13 @@ const Report3 = () => {
           <table className="preview-table">
             <thead>
               <tr>
-                <th>ተ.ቁ</th>
+                <th>ተ.ቁ </th>
                 <th>ይዞታው ባለቤት ስም</th>
                 <th>UPIN</th>
                 <th>ቀበሌ</th>
                 <th>የቦታው ደረጃ</th>
                 <th>የቦታ ስፋት</th>
-                <th>የይዞታ ማራጋገጫ</th>
+                <th>የይዞታው አገልግሎት</th>
               </tr>
             </thead>
             <tbody>
@@ -129,7 +138,7 @@ const Report3 = () => {
                   <td>{record.kebele}</td>
                   <td>{record.placeLevel}</td>
                   <td>{record.spaceSize}</td>
-                  <td>{record.proofOfPossession}</td>
+                  <td>{record.ServiceOfEstate}</td>
                 </tr>
               ))}
             </tbody>
@@ -140,4 +149,4 @@ const Report3 = () => {
   );
 };
 
-export default Report3;
+export default Report1;

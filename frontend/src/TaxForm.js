@@ -1,25 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-const TaxForm = ({ LastTaxPaymtDate }) => {
-  const [unpaidDebt, setUnpaidDebt] = useState("");
-
-  useEffect(() => {
-    const year = parseInt(LastTaxPaymtDate, 10);
-    if (!isNaN(year) && year >= 1950 && year <= 2017) {
-      setUnpaidDebt(2017 - year);
-    } else {
-      setUnpaidDebt("");
-    }
-  }, [LastTaxPaymtDate]);
-
+const TaxForm = ({ debt }) => {
   return (
     <table
       style={{
         borderCollapse: "collapse",
         marginLeft: "10px",
-        minWidth: "70px",
+        minWidth: "50px",
         textAlign: "center",
         fontSize: "12px",
+        height: "50px",
       }}
     >
       <thead>
@@ -44,7 +34,7 @@ const TaxForm = ({ LastTaxPaymtDate }) => {
               height: "20px",
             }}
           >
-            {unpaidDebt}
+            {debt}
           </td>
         </tr>
       </tbody>

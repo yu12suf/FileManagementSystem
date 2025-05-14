@@ -8,6 +8,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css"; // local import
 import FilesView from "./FilesView"; // Adjust the path based on your file structure
 import Report from "./Report"; // Adjust the path based on your file structure
 import TaxForm from "./TaxForm";
+import Graph from "./Graph";
 
 const Home = () => {
   const [currentPage, setCurrentPage] = useState("home");
@@ -16,6 +17,8 @@ const Home = () => {
   const [filePath, setFilePath] = useState(""); // To store the file path
   const [records, setRecords] = useState([]); // To store fetched records
   const [editedRow, setEditedRow] = useState(null);
+
+  const [errors, setErrors] = useState({});
 
   // New ref for the form section
   const formRef = useRef(null); // Create a ref
@@ -49,12 +52,15 @@ const Home = () => {
     proofOfPossession: "",
     DebtRestriction: "",
     LastTaxPaymtDate: "",
+    unpaidTaxDebt: "",
     InvoiceNumber: "",
     lastDatePayPropTax: "",
+    unpaidPropTaxDebt: "",
     InvoiceNumber2: "",
     uploadedFile: null,
     filePath: "",
     EndLeasePayPeriod: "",
+    unpaidLeaseDebt: "",
     InvoiceNumber3: "",
     FolderNumber: "",
     Row: "",
@@ -81,7 +87,7 @@ const Home = () => {
     fetchRecords();
   }, []);
 
-  const handleFileChange = (event) => {
+  /* const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
@@ -91,10 +97,44 @@ const Home = () => {
         uploadedFile: selectedFile,
       }));
     }
+  };*/
+
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile); // Optional, if you're using it elsewhere
+      setFilePath(URL.createObjectURL(selectedFile)); // For client-side preview/view
+      setFormData((prevData) => ({
+        ...prevData,
+        uploadedFile: selectedFile, // Store the actual File object for upload
+      }));
+    }
   };
+
+  const [formErrors, setFormErrors] = useState({});
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+
+    if (name === "PropertyOwnerName") {
+      const characterOnlyRegex = /^[A-Za-z\u1200-\u135A\s]*$/;
+
+      if (!characterOnlyRegex.test(value)) {
+        /*alert("እባክዎን ስሙን በቁምፊ ብቻ ያስገቡ።");
+        return;*/
+        setFormErrors((prevErrors) => ({
+          ...prevErrors,
+          PropertyOwnerName: "Enter only characters please!",
+        }));
+        return;
+      } else {
+        setFormErrors((prevErrors) => ({
+          ...prevErrors,
+          PropertyOwnerName: "",
+        }));
+      }
+    }
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: name === "NumberOfPages" ? Number(value) : value,
@@ -104,15 +144,16 @@ const Home = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // ✅ Simple validation check
-    /*if (!formData.upin || formData.upin.trim() === "") {
-      alert("UPIN is required and cannot be empty.");
-      return;
-    }*/
+    const updatedData = {
+      ...formData,
+      unpaidTaxDebt: calculateUnpaidDebt(formData.LastTaxPaymtDate),
+      unpaidPropTaxDebt: calculateUnpaidDebt(formData.lastDatePayPropTax),
+      unpaidLeaseDebt: calculateUnpaidDebt(formData.EndLeasePayPeriod),
+    };
 
     const formDataToSend = new FormData();
-    for (const key in formData) {
-      formDataToSend.append(key, formData[key]);
+    for (const key in updatedData) {
+      formDataToSend.append(key, updatedData[key]);
     }
 
     try {
@@ -143,25 +184,46 @@ const Home = () => {
       proofOfPossession: "",
       DebtRestriction: "",
       LastTaxPaymtDate: "",
+      unpaidTaxDebt: "",
       InvoiceNumber: "",
       lastDatePayPropTax: "",
+      unpaidPropTaxDebt: "",
       InvoiceNumber2: "",
       uploadedFile: null,
       filePath: "",
       EndLeasePayPeriod: "",
+      unpaidLeaseDebt: "",
       InvoiceNumber3: "",
       FolderNumber: "",
       Row: "",
       ShelfNumber: "",
       NumberOfPages: 0,
     });
+    // Ensure file state is also reset
+    setFile(null);
+    setFilePath("");
   };
+
+  const [displayedFileName, setDisplayedFileName] = useState("");
 
   const handleEdit = (record) => {
     setFormData(record);
     setEditMode(true);
     setEditUpin(record.UPIN);
 
+    // Set filePath from record
+    /*if (record.filePath) {
+      setFilePath(record.filePath); // or record.uploadedFile if it contains the path
+    } else {
+      setFilePath(""); // clear if not available
+    }*/
+    // Set filePath to accessible file URL (from server)
+    if (record.uploadedFile) {
+      setFilePath(`/uploads/${record.uploadedFile}`); // Assuming backend serves from /uploads
+    } else {
+      setFilePath("");
+    }
+    // Set the edit index
     const indexInRecords = records.findIndex((r) => r.UPIN === record.UPIN);
     setEditIndex(indexInRecords);
     setNavigationContext("edit");
@@ -196,17 +258,28 @@ const Home = () => {
   // hanlde save
 
   const handleSaveClick = async () => {
-    // ✅ Simple validation check
-    /* if (!formData.upin || formData.upin.trim() === "") {
-      alert("UPIN is required and cannot be empty.");
-      return;
-      
-    }*/
+    const updatedFile = file || formData.uploadedFile || null;
+
+    // Recalculate debts before sending
+    const updatedData = {
+      ...formData,
+      unpaidTaxDebt: calculateUnpaidDebt(formData.LastTaxPaymtDate),
+      unpaidPropTaxDebt: calculateUnpaidDebt(formData.lastDatePayPropTax),
+      unpaidLeaseDebt: calculateUnpaidDebt(formData.EndLeasePayPeriod),
+      uploadedFile: updatedFile,
+    };
 
     try {
       const formDataToSend = new FormData();
-      for (const key in formData) {
-        formDataToSend.append(key, formData[key]);
+
+      for (const key in updatedData) {
+        if (key === "uploadedFile") {
+          if (updatedData.uploadedFile instanceof File) {
+            formDataToSend.append("uploadedFile", updatedData.uploadedFile);
+          }
+        } else {
+          formDataToSend.append(key, updatedData[key]);
+        }
       }
 
       const response = await axios.put(
@@ -218,8 +291,11 @@ const Home = () => {
       if (response.status === 200) {
         await fetchRecords(); // Re-fetch records to refresh the table
         resetForm();
+        setFile(null); // <<< IMPORTANT
         setEditMode(false);
         setEditUpin(null);
+        setSearchResults([]);
+        setCurrentSearchIndex(0);
       }
     } catch (error) {
       console.error("Error updating record:", error);
@@ -288,15 +364,81 @@ const Home = () => {
     (record) => record.UPIN && record.UPIN.trim() !== ""
   );
 
-  // function for unpaid debt
-  const handleBlur = (e) => {
-    const value = e.target.value;
-    const year = parseInt(value, 10);
-    if (!isNaN(year)) {
-      if (year < 1950 || year > 2017) {
-        alert("Please insert a value between 1950 and 2017");
+  // name handling
+
+  const handleBlurName = (event) => {
+    const { name, value } = event.target;
+
+    if (name === "PropertyOwnerName") {
+      const characterOnlyRegex = /^[A-Za-z\u1200-\u135A\s]*$/;
+
+      if (!characterOnlyRegex.test(value)) {
+        setFormErrors((prevErrors) => ({
+          ...prevErrors,
+          PropertyOwnerName: "Enter only characters please!",
+        }));
+      } else {
+        setFormErrors((prevErrors) => ({
+          ...prevErrors,
+          PropertyOwnerName: "",
+        }));
       }
     }
+  };
+
+  const calculateUnpaidDebt = (year) => {
+    const parsed = parseInt(year, 10);
+    const ethiopianYear = new Date().getFullYear() - 8;
+
+    if (!isNaN(parsed) && parsed >= 1950 && parsed <= ethiopianYear) {
+      return ethiopianYear - parsed;
+    }
+
+    return null;
+  };
+
+  // function for unpaid debt
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    const parsed = parseInt(value, 10);
+    const ethiopianYear = new Date().getFullYear() - 8;
+
+    if (!value || isNaN(parsed) || parsed < 1950 || parsed > ethiopianYear) {
+      alert(`Please insert a value between 1950 and ${ethiopianYear}`);
+
+      // Clear the value and its related debt
+      setFormData((prev) => {
+        const updated = { ...prev, [name]: "" };
+
+        if (name === "LastTaxPaymtDate") {
+          updated.unpaidTaxDebt = "";
+        } else if (name === "lastDatePayPropTax") {
+          updated.unpaidPropTaxDebt = "";
+        } else if (name === "EndLeasePayPeriod") {
+          updated.unpaidLeaseDebt = "";
+        }
+
+        return updated;
+      });
+
+      return; // stop here
+    }
+
+    const unpaid = calculateUnpaidDebt(value);
+
+    setFormData((prev) => {
+      const updates = { [name]: value };
+
+      if (name === "LastTaxPaymtDate") {
+        updates.unpaidTaxDebt = unpaid;
+      } else if (name === "lastDatePayPropTax") {
+        updates.unpaidPropTaxDebt = unpaid;
+      } else if (name === "EndLeasePayPeriod") {
+        updates.unpaidLeaseDebt = unpaid;
+      }
+
+      return { ...prev, ...updates };
+    });
   };
 
   const renderContent = () => {
@@ -307,7 +449,7 @@ const Home = () => {
       case "report":
         return <Report />;
       case "graph":
-        return <div>Graph Content</div>;
+        return <Graph />;
       default:
         return (
           <div ref={formRef}>
@@ -323,15 +465,38 @@ const Home = () => {
               />
             </div>
             <form className="form" onSubmit={handleSubmit}>
-              <div className="form-column">
-                <div className="form-group">
+              <div className="form-column-1">
+                <div className="form-group" style={{ position: "relative" }}>
                   <label>ይዞታው ባለቤት ስም</label>
+
                   <input
                     type="text"
                     name="PropertyOwnerName"
                     value={formData.PropertyOwnerName}
                     onChange={handleChange}
+                    onBlur={handleBlurName} // alert triggers on blur
                   />
+                  {formErrors.PropertyOwnerName && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        backgroundColor: "#fff4f4",
+                        color: "#cc0000",
+                        padding: "4px 8px",
+                        fontSize: "0.85em",
+                        border: "1px solid #cc0000",
+                        borderRadius: "4px",
+                        marginTop: "4px",
+                        whiteSpace: "nowrap",
+                        boxShadow: "0px 2px 6px rgba(0,0,0,0.1)",
+                        zIndex: 100,
+                      }}
+                    >
+                      {formErrors.PropertyOwnerName}
+                    </div>
+                  )}
                 </div>
                 <div className="form-group">
                   <label>የነባር የማህደር ኮደ</label>
@@ -439,7 +604,7 @@ const Home = () => {
                   </select>
                 </div>
               </div>
-              <div className="form-column">
+              <div className="form-column-2">
                 <div className="form-group">
                   <label>የይዞታ ማራጋገጫ</label>
                   <select
@@ -467,29 +632,23 @@ const Home = () => {
                     <option>ነፃ</option>
                   </select>
                 </div>
-                {/* <div className="form-group">
-                  <label>የግብር የመጨረሻ የተከፈለበት ዘመን</label>
-                  <input
-                    type="text"
-                    name="LastTaxPaymtDate"
-                    value={formData.LastTaxPaymtDate}
-                    onChange={handleChange}
-                  />
-                </div> */}
+
                 <div className="form-group">
-                  <label>
+                  <label className="year-label">
                     የግብር የመጨረሻ የተከፈለበት ዘመን
                     <input
                       type="text"
                       name="LastTaxPaymtDate"
                       value={formData.LastTaxPaymtDate}
                       onChange={handleChange}
-                      onBlur={handleBlur} // 👈 alert triggers on blur
+                      onBlur={handleBlur} // alert triggers on blur
+                      min="1950"
+                      max={new Date().getFullYear() - 8}
                       placeholder="e.g., 2015"
                     />
                   </label>
 
-                  <TaxForm LastTaxPaymtDate={formData.LastTaxPaymtDate} />
+                  <TaxForm debt={formData.unpaidTaxDebt} />
                 </div>
 
                 <div className="form-group">
@@ -502,7 +661,7 @@ const Home = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>
+                  <label className="year-label">
                     የንብረት ግብር የመጨረሻ የተከፈለበት ዘመን
                     <input
                       type="text"
@@ -510,10 +669,13 @@ const Home = () => {
                       value={formData.lastDatePayPropTax}
                       onChange={handleChange}
                       onBlur={handleBlur} // 👈 alert triggers on blur
+                      min="1950"
+                      max={new Date().getFullYear() - 8}
                       placeholder="e.g., 2015"
                     />
                   </label>
-                  <TaxForm lastDatePayPropTax={formData.lastDatePayPropTax} />
+
+                  <TaxForm debt={formData.unpaidPropTaxDebt} />
                 </div>
                 <div className="form-group">
                   <label>ደረሰኝ ቁጥር</label>
@@ -524,31 +686,105 @@ const Home = () => {
                     onChange={handleChange}
                   />
                 </div>
-                <div className="form-group">
-                  <label htmlFor="file-upload">Upload File</label>
-                  <input
-                    type="file"
-                    id="file-upload"
-                    onChange={handleFileChange}
-                  />
-                </div>
-                {/* Field to display the file path */}
-                {filePath && (
-                  <div className="form-group">
-                    <label>File Path:</label>
-                    <input type="text" value={filePath} readOnly />
+
+                <div
+                  className="form-group"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "18px",
+                    marginLeft: "-200px",
+                  }}
+                >
+                  {/* File Path Input */}
+                  <div style={{ flex: 1 }}>
+                    <label
+                      htmlFor="file-path"
+                      style={{
+                        display: "block",
+                        fontWeight: "bold",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      File Path
+                    </label>
+                    <input
+                      type="text"
+                      id="file-path"
+                      value={filePath}
+                      readOnly
+                      style={{
+                        width: "100%",
+                        padding: "8px",
+                        borderRadius: "4px",
+                        border: "1px solid #ccc",
+                        backgroundColor: "#f9f9f9",
+                      }}
+                    />
                   </div>
-                )}
+
+                  {/* File Upload Input */}
+                  <div>
+                    <label
+                      htmlFor="file-upload"
+                      style={{
+                        display: "block",
+                        fontWeight: "bold",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      Upload File
+                    </label>
+
+                    <input
+                      type="file"
+                      id="file-upload"
+                      name="uploadedFile"
+                      onChange={handleFileChange}
+                      style={{
+                        padding: "8px",
+                        borderRadius: "4px",
+                        border: "1px solid #ccc",
+                      }}
+                    />
+                    <button
+                      onClick={() => {
+                        if (filePath) window.open(filePath, "_blank");
+                      }}
+                      disabled={!filePath}
+                      style={{
+                        padding: "6px 10px",
+                        backgroundColor: filePath ? "#007bff" : "#ccc",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: filePath ? "pointer" : "not-allowed",
+                        whiteSpace: "nowrap",
+                        width: "100px",
+                        marginLeft: "10px",
+                      }}
+                    >
+                      View File
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="form-column">
-                <div className="form-group">
-                  <label>የሊዝ መጨረሻ የተከፈለበት ዘመን</label>
-                  <input
-                    type="text"
-                    name="EndLeasePayPeriod"
-                    value={formData.EndLeasePayPeriod}
-                    onChange={handleChange}
-                  />
+              <div className="form-column-3">
+                <div className="form-group last-year">
+                  <label>
+                    የሊዝ መጨረሻ የተከፈለበት ዘመን
+                    <input
+                      type="text"
+                      name="EndLeasePayPeriod"
+                      value={formData.EndLeasePayPeriod}
+                      onChange={handleChange}
+                      onBlur={handleBlur} // 👈 alert triggers on blur
+                      min="1950"
+                      max={new Date().getFullYear() - 8}
+                      placeholder="e.g., 2015"
+                    />
+                  </label>
+                  <TaxForm debt={formData.unpaidLeaseDebt} />
                 </div>
                 <div className="form-group">
                   <label>ደረሰኝ ቁጥር</label>
@@ -671,11 +907,14 @@ const Home = () => {
                     <th>የይዞታ ማራጋገጫ</th>
                     <th>እዳና እገዳ</th>
                     <th>የግብር የመጨረሻ የተከፈለበት ዘመን</th>
+                    <th>የግብር ውዝፍ</th>
                     <th>ደረሰኝ ቁጥር</th>
                     <th>የንብረት ግብር የመጨረሻ የተከፈለበት ዘመን</th>
+                    <th>የንብረት ውዝፍ</th>
                     <th>ደረሰኝ ቁጥር</th>
                     <th>Upload File</th>
                     <th>የሊዝ መጨረሻ የተከፈለበት ዘመን</th>
+                    <th>የሊዝ ውዝፍ</th>
                     <th>ደረሰኝ ቁጥር</th>
                     <th>አቃፊ ቁጥር</th>
                     <th>ሮዉ</th>
@@ -698,11 +937,14 @@ const Home = () => {
                       <td>{record.proofOfPossession}</td>
                       <td>{record.DebtRestriction}</td>
                       <td>{record.LastTaxPaymtDate}</td>
+                      <td>{record.unpaidTaxDebt}</td>
                       <td>{record.InvoiceNumber}</td>
                       <td>{record.lastDatePayPropTax}</td>
+                      <td>{record.unpaidPropTaxDebt}</td>
                       <td>{record.InvoiceNumber2}</td>
                       <td>{record.uploadedFile}</td>
                       <td>{record.EndLeasePayPeriod}</td>
+                      <td>{record.unpaidLeaseDebt}</td>
                       <td>{record.InvoiceNumber3}</td>
                       <td>{record.FolderNumber}</td>
                       <td>{record.Row}</td>

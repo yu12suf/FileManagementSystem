@@ -21,6 +21,7 @@
   border-radius: 8px;
   cursor: pointer;
   margin-bottom: 12px;
+  color: white;
 
 }
 
@@ -49,5 +50,7 @@
     margin-bottom: 8px; /* Adds spacing between buttons */
     background-color: #005f7f;
 }
-
+.app h1{
+    text-align: center;
+}
   

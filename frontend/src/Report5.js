@@ -1,17 +1,17 @@
 import React, { useRef, useState } from "react";
 import axios from "axios";
-import "./Report3.css";
+import "./Report5.css";
 
-const Report3 = () => {
+const Report5 = () => {
   const [selectedProof, setSelectedProof] = useState("");
   const [records, setRecords] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const printRef = useRef(); // Reference for print content
+  const printRef = useRef();
 
   const handlePreview = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/records/search?proofOfPossession=${selectedProof}`
+        `http://localhost:5000/api/records/search?possessionStatus=${selectedProof}`
       );
       setRecords(response.data);
       setShowModal(true); // Show the modal after data is fetched
@@ -27,7 +27,7 @@ const Report3 = () => {
   const handlePrint = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/records/search?proofOfPossession=${selectedProof}`
+        `http://localhost:5000/api/records/search?possessionStatus=${selectedProof}`
       );
       setRecords(response.data);
 
@@ -48,17 +48,15 @@ const Report3 = () => {
 
   return (
     <div className="form-group horizontal-group">
-      <label>የይዞታ ማራጋገጫ</label>
+      <label>የይዞታ የተገኘበት ሁኔታ</label>
       <select
-        name="proofOfPossession"
+        name="possessionStatus"
         value={selectedProof}
         onChange={(e) => setSelectedProof(e.target.value)}
       >
         <option value="">Select</option>
-        <option>ካርታ</option>
-        <option>ሰነድ አልባ</option>
-        <option>ህገ-ውፕ</option>
-        <option>ምንም የሌለው</option>
+        <option>ነባር</option>
+        <option>ሊዝ</option>
       </select>
       <div className="button-group-vertical">
         <button onClick={handlePreview}>Preview</button>
@@ -71,20 +69,21 @@ const Report3 = () => {
             <button className="close-button" onClick={handleClose}>
               &times;
             </button>
-            <div className="report3-header">
+            <div className="report5-header">
               <h2>የተመረጠው መረጃ</h2>
             </div>
 
             <table className="preview-table">
               <thead>
                 <tr>
-                  <th>ተ.ቁ</th>
+                  <th>ተ.ቁ </th>
                   <th>ይዞታው ባለቤት ስም</th>
                   <th>UPIN</th>
-                  <th>ቀበሌ</th>
                   <th>የቦታው ደረጃ</th>
                   <th>የቦታ ስፋት</th>
-                  <th>የይዞታ ማራጋገጫ</th>
+                  <th>የይዞታው አገልግሎት</th>
+                  <th>ቀበሌ</th>
+                  <th>የይዞታየተገኘበት ሁኔታ</th>
                 </tr>
               </thead>
               <tbody>
@@ -93,10 +92,11 @@ const Report3 = () => {
                     <td>{index + 1}</td>
                     <td>{record.PropertyOwnerName}</td>
                     <td>{record.UPIN}</td>
-                    <td>{record.kebele}</td>
                     <td>{record.placeLevel}</td>
                     <td>{record.spaceSize}</td>
-                    <td>{record.proofOfPossession}</td>
+                    <td>{record.ServiceOfEstate}</td>
+                    <td>{record.kebele}</td>
+                    <td>{record.possessionStatus}</td>
                   </tr>
                 ))}
               </tbody>
@@ -111,13 +111,14 @@ const Report3 = () => {
           <table className="preview-table">
             <thead>
               <tr>
-                <th>ተ.ቁ</th>
+                <th>ተ.ቁ </th>
                 <th>ይዞታው ባለቤት ስም</th>
                 <th>UPIN</th>
-                <th>ቀበሌ</th>
                 <th>የቦታው ደረጃ</th>
                 <th>የቦታ ስፋት</th>
-                <th>የይዞታ ማራጋገጫ</th>
+                <th>የይዞታው አገልግሎት</th>
+                <th>ቀበሌ</th>
+                <th>የይዞታየተገኘበት ሁኔታ</th>
               </tr>
             </thead>
             <tbody>
@@ -126,10 +127,11 @@ const Report3 = () => {
                   <td>{index + 1}</td>
                   <td>{record.PropertyOwnerName}</td>
                   <td>{record.UPIN}</td>
-                  <td>{record.kebele}</td>
                   <td>{record.placeLevel}</td>
                   <td>{record.spaceSize}</td>
-                  <td>{record.proofOfPossession}</td>
+                  <td>{record.ServiceOfEstate}</td>
+                  <td>{record.kebele}</td>
+                  <td>{record.possessionStatus}</td>
                 </tr>
               ))}
             </tbody>
@@ -140,4 +142,4 @@ const Report3 = () => {
   );
 };
 
-export default Report3;
+export default Report5;

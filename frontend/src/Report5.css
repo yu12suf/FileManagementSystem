@@ -67,7 +67,7 @@
     background-color: green;
   }
 
-  /* button styles */
+   /* button styles */
   .horizontal-group {
   display: flex;
   align-items: center;
@@ -93,6 +93,6 @@
   color: white;
   border-radius: 3px;
 }
-.report3-header{
+.report5-header{
   text-align: center;
 }

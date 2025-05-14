@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import "./Report.css"; // For styling
 import Report3 from "./Report3";
+import Report1 from "./Report1";
+import Report2 from "./Report2";
+import Report4 from "./Report4";
+import Report5 from "./Report5";
+import Report6 from "./Report6";
 
 const Report = ({ title, kebele, content }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,88 +28,34 @@ const Report = ({ title, kebele, content }) => {
 const App = () => {
   const reports = [
     {
-      title: "Report 1",
+      title: "የይዞታው አገልግሎት",
       kebele: "19 kebele",
-      content: (
-        <div className="form-group">
-          <label>የይዞታው አገልግሎት</label>
-          <select name="ServiceOfEstate">
-            <option value="">Select</option>
-            <option>ለመኖረያ</option>
-            <option>ለንግድ</option>
-            <option>የመንግስት</option>
-            <option>የሐይማኖት ተቋም</option>
-            <option>ኢንቨስትመንት</option>
-            <option>የቀበሌ</option>
-            <option>የኪይ ቤቶች</option>
-            <option>ኮንዲኒሚየም</option>
-            <option>መንገድ</option>
-            <option>የማሃበር</option>
-            <option>ሌሎች</option>
-          </select>
-          <div className="button-group">
-            <button>Preview</button>
-
-            <button>Print</button>
-          </div>
-        </div>
-      ),
+      content: <Report1 />,
     },
     {
-      title: "Report 2",
+      title: "የነባር ይዞታ ግብር ያልከፈሉ ባለይዞታዎች",
       kebele: "19 kebele",
-      content: (
-        <div className="form-group">
-          <label>ቀበሌ</label>
-          <select name="kebele">
-            <option value="">Select</option>
-            <option>01</option>
-            <option>02</option>
-            <option>03</option>
-            <option>04</option>
-            <option>05</option>
-            <option>06</option>
-            <option>07</option>
-            <option>08</option>
-            <option>09</option>
-            <option>10</option>
-            <option>11</option>
-            <option>12</option>
-            <option>13</option>
-            <option>14</option>
-            <option>15</option>
-            <option>16</option>
-            <option>17</option>
-            <option>18</option>
-            <option>19</option>
-          </select>
-          <div className="button-group">
-            <button>Preview</button>
-
-            <button>Print</button>
-          </div>
-        </div>
-      ),
+      content: <Report2 />,
     },
     {
-      title: "Report 3",
+      title: "የይዞታ ማራጋገጫ",
       kebele: "19 kebele",
       content: <Report3 />,
     },
     {
-      title: "Report 4",
+      title: "የሊዝ ይዞታ ግብር ያልከፈሉ ባለይዞታዎች",
       kebele: "19 kebele",
-      content: (
-        <div>
-          <p>Report 4 content with map data.</p>
-          <img src="map-placeholder.png" alt="Map" />
-        </div>
-      ),
+      content: <Report4 />,
     },
     {
-      title: "Report 5",
+      title: "የይዞታ የተገኘበት ሁኔታ",
       kebele: "19 kebele",
-      content: <p>Special notes and remarks unique to Report 5.</p>,
+      content: <Report5 />,
+    },
+    {
+      title: "የቋሚ ንብረት ግብር ያልከፈሉ ባልይዞታዎች",
+      kebele: "19 kebele",
+      content: <Report6 />,
     },
   ];
 

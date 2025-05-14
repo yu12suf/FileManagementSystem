@@ -15,7 +15,14 @@
   }
   
   .preview-table th {
-    background-color: #f2f2f2;
+    background-color: darkblue;
+  }
+  .preview-table thead th{
+    background-color: darkblue;
+    color: white;
+  }
+  .preview-table td:last-child{
+    background-color: green;
   }
   
   .modal-overlay {
@@ -59,15 +66,8 @@
   .close-button:hover {
     background: #a00;
   }
-  .preview-table thead th{
-    background-color: darkblue;
-    color: white;
-  }
-  .preview-table td:last-child{
-    background-color: green;
-  }
+  
 
-  /* button styles */
   .horizontal-group {
   display: flex;
   align-items: center;
@@ -93,6 +93,6 @@
   color: white;
   border-radius: 3px;
 }
-.report3-header{
+.report1-header{
   text-align: center;
 }
