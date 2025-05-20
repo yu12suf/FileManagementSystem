@@ -96,6 +96,28 @@ const FilesView = () => {
     }));
   };
 
+  const handleResetForm = () => {
+    setFormData({
+      PropertyOwnerName: "",
+      ExistingArchiveCode: "",
+      UPIN: "",
+      ServiceOfEstate: "",
+      placeLevel: "",
+      possessionStatus: "",
+      DebtRestriction: "",
+      LastTaxPaymtDate: "",
+      InvoiceNumber: "",
+      FolderNumber: "",
+      ShelfNumber: "",
+      NumberOfPages: "",
+      sortingNumber: "",
+      spaceSize: "",
+      proofOfPossession: "",
+      kebele: "",
+      EndLeasePayPeriod: "",
+    });
+  };
+
   return (
     <div>
       <div
@@ -448,6 +470,12 @@ const FilesView = () => {
               value={formData.NumberOfPages}
               onChange={handleChange}
             />
+          </div>
+
+          <div className="form-reset-container">
+            <button onClick={handleResetForm} className="reset-button">
+              Reset
+            </button>
           </div>
         </div>
       </div>
