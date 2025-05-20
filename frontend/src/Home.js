@@ -20,6 +20,9 @@ const Home = () => {
 
   const [errors, setErrors] = useState({});
 
+  const BASE_URL =
+    process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+
   // New ref for the form section
   const formRef = useRef(null); // Create a ref
 
@@ -948,7 +951,21 @@ const Home = () => {
                       <td>{record.lastDatePayPropTax}</td>
                       <td>{record.unpaidPropTaxDebt}</td>
                       <td>{record.InvoiceNumber2}</td>
-                      <td>{record.uploadedFile}</td>
+                      {/*  <td>{record.uploadedFile}</td>*/}
+                      <td>
+                        {record.uploadedFile ? (
+                          <a
+                            href={`${BASE_URL}/api/files/${record.uploadedFile}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {record.uploadedFile}
+                          </a>
+                        ) : (
+                          "No file"
+                        )}
+                      </td>
+
                       <td>{record.EndLeasePayPeriod}</td>
                       <td>{record.unpaidLeaseDebt}</td>
                       <td>{record.InvoiceNumber3}</td>
