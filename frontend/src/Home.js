@@ -39,6 +39,14 @@ const Home = () => {
     }
   }, [editIndex]);
 
+  // useEffect to populate form when search results change
+
+  useEffect(() => {
+    if (navigationContext === "search" && currentSearchIndex >= 0) {
+      populateFormWithRecord(searchResults[currentSearchIndex]);
+    }
+  }, [currentSearchIndex]);
+
   // State for form inputs
   const [formData, setFormData] = useState({
     PropertyOwnerName: "",
@@ -211,15 +219,10 @@ const Home = () => {
     setEditMode(true);
     setEditUpin(record.UPIN);
 
-    // Set filePath from record
-    /*if (record.filePath) {
-      setFilePath(record.filePath); // or record.uploadedFile if it contains the path
-    } else {
-      setFilePath(""); // clear if not available
-    }*/
     // Set filePath to accessible file URL (from server)
     if (record.uploadedFile) {
-      setFilePath(`/uploads/${record.uploadedFile}`); // Assuming backend serves from /uploads
+      //setFilePath(`/uploads/${record.uploadedFile}`); // Assuming backend serves from /uploads
+      setFilePath(`http://localhost:5000/api/files/${record.uploadedFile}`);
     } else {
       setFilePath("");
     }
@@ -314,7 +317,7 @@ const Home = () => {
       setNavigationContext("search");
     } else {
       setSearchResults([]);
-      setCurrentSearchIndex(-1); // Or set to null if no results
+      setCurrentSearchIndex(null); // Or set to null if no results
       alert("No records found.");
     }
 
@@ -346,7 +349,7 @@ const Home = () => {
   };
 
   const handleNext = () => {
-    if (navigationContext === "search") {
+    if (navigationContext === "search" && currentSearchIndex != null) {
       if (currentSearchIndex < searchResults.length - 1) {
         const newIndex = currentSearchIndex + 1;
         setCurrentSearchIndex(newIndex);
@@ -660,7 +663,7 @@ const Home = () => {
                     onChange={handleChange}
                   />
                 </div>
-                <div className="form-group">
+                <div className="form-group tax-pay">
                   <label className="year-label">
                     የንብረት ግብር የመጨረሻ የተከፈለበት ዘመን
                     <input
@@ -747,6 +750,7 @@ const Home = () => {
                         border: "1px solid #ccc",
                       }}
                     />
+
                     <button
                       onClick={() => {
                         if (filePath) window.open(filePath, "_blank");
@@ -778,7 +782,7 @@ const Home = () => {
                       name="EndLeasePayPeriod"
                       value={formData.EndLeasePayPeriod}
                       onChange={handleChange}
-                      onBlur={handleBlur} // 👈 alert triggers on blur
+                      onBlur={handleBlur} //  alert triggers on blur
                       min="1950"
                       max={new Date().getFullYear() - 8}
                       placeholder="e.g., 2015"
@@ -789,7 +793,7 @@ const Home = () => {
                 <div className="form-group">
                   <label>ደረሰኝ ቁጥር</label>
                   <input
-                    type="text"
+                    type="number"
                     name="InvoiceNumber3"
                     value={formData.InvoiceNumber3}
                     onChange={handleChange}
@@ -860,8 +864,10 @@ const Home = () => {
                       resetForm();
                       setEditMode(false);
                       setEditUpin(null);
-                      setSearchResults([]);
-                      setCurrentSearchIndex(0);
+                      if (navigationContext === "edit") {
+                        setSearchResults([]);
+                        setCurrentSearchIndex(0);
+                      }
                     }}
                   >
                     Save

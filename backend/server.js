@@ -346,6 +346,9 @@ app.get("/api/records/search", (req, res) => {
 
 // file view route
 
+//app.use('/uploads', express.static('uploads'));
+
+
 app.get("/api/records/:UPIN/UploadedFile", (req, res) => {
   const UPIN = req.params.UPIN;
   const query = "SELECT UploadedFile, FilePath FROM records WHERE UPIN = ?";
@@ -363,6 +366,37 @@ app.get("/api/records/:UPIN/UploadedFile", (req, res) => {
     res.send(file.UploadedFile);
   });
 });
+
+
+//const path = require("path");
+
+// Serve file by filename from DB
+app.get("/api/files/:filename", (req, res) => {
+  const filename = req.params.filename;
+  const query = "SELECT UploadedFile FROM records WHERE FilePath = ? LIMIT 1";
+
+  db.query(query, [filename], (err, results) => {
+    if (err || results.length === 0) {
+      return res.status(404).send("File not found");
+    }
+
+    const fileBuffer = results[0].UploadedFile;
+    const extension = path.extname(filename) || ".pdf"; // fallback if no ext
+    const mimeType = {
+      ".pdf": "application/pdf",
+      ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ".doc": "application/msword",
+      ".jpg": "image/jpeg",
+      ".jpeg": "image/jpeg",
+      ".png": "image/png",
+    }[extension.toLowerCase()] || "application/octet-stream";
+
+    res.setHeader("Content-Type", mimeType);
+    res.setHeader("Content-Disposition", `inline; filename="${filename}"`);
+    res.send(fileBuffer);
+  });
+});
+
 
 // API Route to get percentage breakdown of ServiceOfEstate values
 app.get("/api/statistics/service-of-estate", (req, res) => {
