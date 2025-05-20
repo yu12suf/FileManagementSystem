@@ -20,9 +20,6 @@ const Home = () => {
 
   const [errors, setErrors] = useState({});
 
-  const BASE_URL =
-    process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
-
   // New ref for the form section
   const formRef = useRef(null); // Create a ref
 
@@ -97,18 +94,6 @@ const Home = () => {
   useEffect(() => {
     fetchRecords();
   }, []);
-
-  /* const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      setFilePath(selectedFile.name);
-      setFormData((prevData) => ({
-        ...prevData,
-        uploadedFile: selectedFile,
-      }));
-    }
-  };*/
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -214,8 +199,6 @@ const Home = () => {
     setFile(null);
     setFilePath("");
   };
-
-  const [displayedFileName, setDisplayedFileName] = useState("");
 
   const handleEdit = (record) => {
     setFormData(record);
@@ -955,7 +938,7 @@ const Home = () => {
                       <td>
                         {record.uploadedFile ? (
                           <a
-                            href={`${BASE_URL}/api/files/${record.uploadedFile}`}
+                            href={`http://localhost:5000/api/files/${record.uploadedFile}`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
